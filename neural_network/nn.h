@@ -58,6 +58,7 @@ typedef struct {
     Mat *as; // The amount of activations is count+1
 } NN;
 NN nn_alloc(size_t *arch, size_t arch_count);
+void nn_rand(NN nn, float low, float high);
 #define NN_PRINT(nn) nn_print(nn, #nn)
 
 #endif // NN_H_
@@ -192,6 +193,15 @@ NN nn_alloc(size_t *arch, size_t arch_count){
     }
     return nn;
 }
+
+
+void nn_rand(NN nn, float low, float high){
+    for(size_t i = 0; i < nn.count; ++i){
+        mat_rand(nn.ws[i], low, high);
+        mat_rand(nn.bs[i], low, high);
+    }
+}
+
 
 void nn_print(NN nn, const char *name){
     printf("%s = [\n", name);

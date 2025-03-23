@@ -140,11 +140,12 @@ float td [] = {
 
 
 int main(){
+    srand(time(0));
 
     size_t arch[] = {2, 2, 1};
     NN nn = nn_alloc(arch, sizeof(arch)/sizeof(arch[0]));
+    nn_rand(nn, 0, 1);
     NN_PRINT(nn);
-
 
 
 
@@ -155,7 +156,6 @@ int main(){
 
     return 0;
     
-    srand(time(0));
 
     size_t n = sizeof(td)/sizeof(td[0])/3;
     Mat ti = {
