@@ -18,13 +18,15 @@
 
 
 // float d[]  ={
-//      0, 0, 0, 
-//      0, 1, 1,
-//      1, 0, 1, 
-//      1, 1, 1,
-// };
-// Mat di = {.rows = 4, .cols = 2, .stride = 3 .es = &d[0]};
-// Mat do = {.rows = 4, .cols = 1, .stride = 3 .es = &d[2]};
+    //      0, 0, 0, 
+    //      0, 1, 1,
+    //      1, 0, 1, 
+    //      1, 1, 1,
+    // };
+    // Mat di = {.rows = 4, .cols = 2, .stride = 3 .es = &d[0]};
+    // Mat do = {.rows = 4, .cols = 1, .stride = 3 .es = &d[2]};
+    
+#define ARRAY_LEN(xs) (sizeof(xs)/sizeof(xs[0]))
 
 typedef struct {
     size_t rows;
@@ -48,6 +50,15 @@ void mat_add(Mat dst, Mat a);
 void mat_sig(Mat m);
 void mat_print(Mat m, const char *name);
 #define MAT_PRINT(m) mat_print(m, #m)
+
+typedef struct {
+    size_t count;
+    Mat *ws;
+    Mat *bs;
+    Mat *as; // The amount of activations is count+1
+} NN;
+NN nn_alloc(size_t *arch, size_t arch_count);
+#define NN_PRINT(nn) nn_print(nn, #nn)
 
 #endif // NN_H_
 
@@ -158,11 +169,41 @@ void mat_print(Mat m, const char *name){
         }
         printf("\n");
     }
-    printf("]\n");
+    printf("        ]\n");
 }
 
 
 
+NN nn_alloc(size_t *arch, size_t arch_count){
+    NN nn;
+    nn.count = arch_count - 1;
+    nn.ws = NN_MALLOC(sizeof(*nn.ws)*nn.count);
+    NN_ASSERT(nn.ws != NULL);
+    nn.bs = NN_MALLOC(sizeof(*nn.bs)*nn.count);
+    NN_ASSERT(nn.bs != NULL);
+    nn.as = NN_MALLOC(sizeof(*nn.as)*(nn.count+1));
+    NN_ASSERT(nn.as != NULL);
 
+    nn.as[0] = mat_alloc(1, arch[0]);
+    for(size_t i = 1; i < arch_count; ++i){
+        nn.ws[i-1] = mat_alloc(nn.as[i-1].cols, arch[i]);
+        nn.bs[i-1] = mat_alloc(1, arch[i]);
+        nn.as[i]   = mat_alloc(1, arch[i]);
+    }
+    return nn;
+}
+
+void nn_print(NN nn, const char *name){
+    printf("%s = [\n", name);
+    for(size_t i = 0; i < nn.count; ++i){
+        printf("    W%ld = [\n", i);
+        mat_print(nn.ws[i], "        W");
+        printf("    ]\n");
+        printf("    B%ld = [\n", i);
+        mat_print(nn.bs[i], "        B");
+        printf("    ]\n");
+    }
+    printf("]\n");
+}
 
 #endif // NN_IMPLEMENTATION
