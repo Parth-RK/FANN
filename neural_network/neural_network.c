@@ -142,45 +142,48 @@ float td [] = {
 int main(){
     srand(time(0));
 
-    size_t arch[] = {2, 2, 1};
-    NN nn = nn_alloc(arch, sizeof(arch)/sizeof(arch[0]));
-    nn_rand(nn, 0, 1);
-    NN_PRINT(nn);
-
-
-
-
-
-
-
-
-    return 0;
     
+    // NN_PRINT(nn);
 
+
+
+
+
+
+
+
+    
+    
     size_t n = sizeof(td)/sizeof(td[0])/3;
     Mat ti = {
         .rows = n, 
         .cols = 2, 
         .stride = 3, 
         .es = td};
+        
+        Mat to = {
+            .rows = n, 
+            .cols = 1, 
+            .stride = 3, 
+            .es = td + 2};
+    
+    size_t arch[] = {2, 2, 1};
+    NN nn = nn_alloc(arch, sizeof(arch)/sizeof(arch[0]));
+    nn_rand(nn, 0, 1);
 
-    Mat to = {
-        .rows = n, 
-        .cols = 1, 
-        .stride = 3, 
-        .es = td + 2};
-    MAT_PRINT(ti);
-    MAT_PRINT(to);
+    MAT_PRINT(mat_row(ti, 0));
+    
+    return 0;
 
     Xor m = xor_alloc();
     Xor g = xor_alloc();
-
-
+    
+    
     mat_rand(m.w1, 0, 1);
     mat_rand(m.b1, 0, 1);
     mat_rand(m.w2, 0, 1);
     mat_rand(m.b2, 0, 1);
-
+    
     float eps = 1e-1;
     float rate = 9e-1;
     for(size_t i = 0; i < 10000; ++i){

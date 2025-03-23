@@ -59,6 +59,7 @@ typedef struct {
 } NN;
 NN nn_alloc(size_t *arch, size_t arch_count);
 void nn_rand(NN nn, float low, float high);
+void nn_forward(NN nn);
 #define NN_PRINT(nn) nn_print(nn, #nn)
 
 #endif // NN_H_
@@ -199,6 +200,15 @@ void nn_rand(NN nn, float low, float high){
     for(size_t i = 0; i < nn.count; ++i){
         mat_rand(nn.ws[i], low, high);
         mat_rand(nn.bs[i], low, high);
+    }
+}
+
+
+void nn_forward(NN nn){
+    for(size_t i = 0; i < nn.count; ++i){
+        mat_dot(nn.as[i+1], nn.as[i], nn.ws[i]);
+        mat_add(nn.as[i+1], nn.bs[i]);
+        mat_sig(nn.as[i+1]);
     }
 }
 
