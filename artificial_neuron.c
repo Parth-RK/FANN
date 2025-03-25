@@ -45,9 +45,10 @@ int main(){
   int iter = 5000;
   
   for(size_t i = 0; i < iter; ++i){
-  float dcost = (cost(w + eps) - cost(w))/eps;
-  w -= rate*dcost;
-  printf("cost = %f, w = %f\n", cost(w), w);
+    float c = cost(w);
+    float dw = (cost(w + eps) - c)/eps;  // uses finite diff instead of actual derivative
+    w -= rate*dw;
+    printf("cost = %f, w = %f\n", cost(w), w);
   }
   printf("-----------------------------\n");
   printf("%f\n", w);
