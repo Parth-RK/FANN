@@ -1,3 +1,4 @@
+// using basic functions of nn.h
 #define NN_IMPLEMENTATION
 #include "nn.h"
 #include <time.h>
